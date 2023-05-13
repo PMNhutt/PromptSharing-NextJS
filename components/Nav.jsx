@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Nav = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
 
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -36,7 +36,7 @@ const Nav = () => {
 
       {/*  desktop nav */}
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Prompt
@@ -48,7 +48,7 @@ const Nav = () => {
 
             <Link href="/profile">
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -65,7 +65,7 @@ const Nav = () => {
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
                   className="black_btn"
-                ></button>
+                >Sign In</button>
               ))}
           </>
         )}
@@ -73,14 +73,14 @@ const Nav = () => {
 
       {/* mobile nav */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
               alt="logo"
               width={30}
               height={30}
-              className="rounded-full"
-              src="/assets/images/logo.svg"
+              className="rounded-full cursor-pointer"
+              src={session?.user.image}
               onClick={() => setToggleDropdown((prev) => !prev)}
             />
 
@@ -122,7 +122,7 @@ const Nav = () => {
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
                   className="black_btn"
-                ></button>
+                >Sign In</button>
               ))}
           </>
         )}
